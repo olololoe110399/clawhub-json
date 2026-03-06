@@ -1,0 +1,17 @@
+{
+  "name": "clawhub-json-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sync ClawHub skills into JSON and push updates to GitHub every 6 hours.",
+  "type": "module",
+  "scripts": {
+    "sync": "tsx scripts/sync-skills.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
+}
