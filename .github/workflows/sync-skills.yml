@@ -33,13 +33,12 @@ jobs:
 
       - name: Run sync script
         env:
-          CLAWHUB_BASE_URL: ${{ secrets.CLAWHUB_BASE_URL }}
-          CLAWHUB_API_KEY: ${{ secrets.CLAWHUB_API_KEY }}
+          CLAWHUB_BASE_URL: "https://clawhub.ai/api/v1"
           CLAWHUB_OUTPUT_DIR: data
           CLAWHUB_LIMIT: "200"
           CLAWHUB_TIMEOUT_MS: "20000"
           CLAWHUB_MAX_RETRIES: "3"
-          CLAWHUB_HISTORY: "true"
+          CLAWHUB_HISTORY: "false"
         run: npm run sync
 
       - name: Commit and push if changed
