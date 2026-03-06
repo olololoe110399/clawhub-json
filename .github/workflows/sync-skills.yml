@@ -1,0 +1,58 @@
+name: Sync skills json
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-skills-json
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run sync script
+        env:
+          CLAWHUB_BASE_URL: ${{ secrets.CLAWHUB_BASE_URL }}
+          CLAWHUB_API_KEY: ${{ secrets.CLAWHUB_API_KEY }}
+          CLAWHUB_OUTPUT_DIR: data
+          CLAWHUB_LIMIT: "200"
+          CLAWHUB_TIMEOUT_MS: "20000"
+          CLAWHUB_MAX_RETRIES: "3"
+          CLAWHUB_HISTORY: "true"
+        run: npm run sync
+
+      - name: Commit and push if changed
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: sync clawhub skills json"
+          git push
