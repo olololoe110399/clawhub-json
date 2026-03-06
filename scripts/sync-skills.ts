@@ -18,12 +18,11 @@ interface ClawHubAPISkillsPage {
 }
 
 const BASE_URL = requiredEnv("CLAWHUB_BASE_URL").replace(/\/+$/, "");
-const API_KEY = process.env.CLAWHUB_API_KEY;
 const OUTPUT_DIR = process.env.CLAWHUB_OUTPUT_DIR || "data";
 const LIMIT = parseNumber(process.env.CLAWHUB_LIMIT, 200);
 const TIMEOUT_MS = parseNumber(process.env.CLAWHUB_TIMEOUT_MS, 20_000);
 const MAX_RETRIES = parseNumber(process.env.CLAWHUB_MAX_RETRIES, 3);
-const HISTORY_ENABLED = (process.env.CLAWHUB_HISTORY || "true").toLowerCase() === "true";
+const HISTORY_ENABLED = (process.env.CLAWHUB_HISTORY || "false").toLowerCase() === "true";
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -52,10 +51,6 @@ async function fetchJson<T>(url: string): Promise<T> {
     try {
       const response = await fetch(url, {
         method: "GET",
-        headers: {
-          Accept: "application/json",
-          ...(API_KEY ? { Authorization: `Bearer ${API_KEY}` } : {}),
-        },
         signal: controller.signal,
       });
 
